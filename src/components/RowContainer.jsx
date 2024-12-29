@@ -1,14 +1,31 @@
-import React, { useEffect, useRef } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { MdShoppingBasket } from 'react-icons/md'
 import { motion } from 'framer-motion'
 import NotFound from '../img/NotFound.svg';
 import { div } from 'framer-motion/client'
+import { useStateValue } from '../context/StateProvider';
+import { actionType } from '../context/reducer';
 
 function RowContainer({flag, data, scrollValue}) {
-    const rowContainer = useRef()
+    const rowContainer = useRef();
+    const [items, setitems] = useState([]);
+    const [{cartItems}, dispatch] = useStateValue();
+    const addtocart = () => {
+        dispatch({
+            type : actionType.SET_CART_ITEMS,
+            cartItems : items,
+        });
+        localStorage.setItem("cartItems", JSON.stringify(items))
+    };   
+
     useEffect(()=>{
         rowContainer.current.scrollLeft += scrollValue;
-    }, [scrollValue])
+    }, [scrollValue]);
+
+    useEffect(()=>{
+        addtocart()
+    }, [items])
+
   return (
     <div ref={rowContainer}className={`w-full flex  items-center gap-3 my-12 scroll-smooth  ${flag? 'overflow-x-scroll scrollbar-none': 'overflow-x-hidden flex-wrap justify-center'}`}>
         {data && data.length > 0 ? data.map((item) => (
@@ -17,7 +34,8 @@ function RowContainer({flag, data, scrollValue}) {
                     <motion.div className='w-40 h-40 -mt-8 drop-shadow-2xl' whileHover={{scale:1.2}}>
                         <img  src={item?.imageUrl} alt=""  className='w-full h-full object-contain'/>
                     </motion.div>
-                    <motion.div whileTap={{scale: 0.75}} className='w-8 h-8 rounded-full bg-red-600 flex items-center justify-center cursor-pointer hover:shadow-md'>
+                    <motion.div whileTap={{scale: 0.75}} className='w-8 h-8 rounded-full bg-red-600 flex items-center justify-center cursor-pointer hover:shadow-md'
+                    onClick={() =>setitems([...cartItems, item])}>
                         <MdShoppingBasket className='text-white'/>
                     </motion.div>
                 </div>
