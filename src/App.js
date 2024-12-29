@@ -15,7 +15,7 @@ const App = () => {
                 type : actionType.SET_FOOD_ITEMS,
                 foodItems : data
 
-            })
+            });
         });
     };
 
