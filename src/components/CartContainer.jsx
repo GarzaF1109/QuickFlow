@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { MdOutlineKeyboardBackspace } from 'react-icons/md'
 import { motion } from 'framer-motion'
 import { RiRefreshFill } from 'react-icons/ri'
@@ -11,12 +11,31 @@ import CartItem from './CartItem'
 function CartContainer() {
   
     const [{cartShow, cartItems, user}, dispatch] = useStateValue();
+    const [tot, setTot] = useState(0); // Precio total
+    const [flag, setFlag] = useState(false); // Indicador de actualización
 
     const showCart = () => {
         dispatch({
             type : actionType.SET_CART_SHOW,
             cartShow : !cartShow,
         });
+    }
+
+    useEffect(()=>{
+        let totalPrice = cartItems.reduce(function(accumulator, item){
+            return accumulator + item.qty * item.price;
+        }, 0);
+        setTot(totalPrice);
+        console.log(tot);
+
+    }, [tot, flag]);
+
+    const clearCart = () => {
+        dispatch({
+            type : actionType.SET_CART_ITEMS,
+            cartItems: [],
+        });
+        localStorage.setItem("cartItems", JSON.stringify([]));
     }
 
     return (
@@ -27,7 +46,7 @@ function CartContainer() {
                 <MdOutlineKeyboardBackspace className='text-textColor text-3xl'/>
             </motion.div>            
         <p className='text-textColor text-lg font-semibold'>Cart</p>
-            <motion.p whileTap={{scale: 0.75 }} className='flex items-center gap-2 p-1 px-2 my-2 bg-gray-100 rounded-md hover:shadow-md cursor-pointer text-textColor text-base'>
+            <motion.p whileTap={{scale: 0.75 }} className='flex items-center gap-2 p-1 px-2 my-2 bg-gray-100 rounded-md hover:shadow-md cursor-pointer text-textColor text-base' onClick={clearCart}>
                 Clear
                 <RiRefreshFill/>  
         </motion.p>
@@ -39,8 +58,8 @@ function CartContainer() {
                     {/* Cart Items section*/}
                     <div className='w-full h-340 md:h-42 px-6 py-10 flex flex-col gap-3 overflow-y-scroll scrollbar-none'>
                         {/* Cart Item */}
-                    {cartItems && cartItems.map(item =>(
-                        <CartItem key={item.id} item={item}/>
+                    {cartItems && cartItems.length > 0 && cartItems.map((item) =>(
+                        <CartItem key={item.id} item={item} setFlag={setFlag} flag={flag}/>
                     ))}
                     </div>
         
@@ -51,7 +70,7 @@ function CartContainer() {
                                 Sub Total
                             </p>
                             <p className=' text-gray-400 text-lg'>
-                                $8.5
+                                ${tot}
                             </p>
                         </div>
                         <div className='w-full flex items-center justify-between'>
@@ -70,7 +89,7 @@ function CartContainer() {
                                 Total
                             </p>
                             <p className='text-gray-200 text-xl font-semibold'>
-                                $11.5
+                                ${tot + 2.5}
                             </p>
                         </div>
         

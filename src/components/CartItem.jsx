@@ -3,19 +3,18 @@ import { BiMinus, BiPlus } from 'react-icons/bi'
 import { motion } from 'framer-motion'
 import { useStateValue } from '../context/StateProvider'
 import { actionType } from '../context/reducer'
+let items = [];
 
-const CartItem = ({item}) => {
+const CartItem = ({item, setFlag, flag}) => {
   
-    const [qty, setQty] = useState(item.qty)
-
-    const [items, setitems] = useState([])
+    const [qty, setQty] = useState(item.qty);
 
     const [{cartItems}, dispatch] = useStateValue();
 
     const cartDispatch = () => {
         localStorage.setItem("cartItems", JSON.stringify(items));
         dispatch({
-            type: actionType.SET_CART,
+            type: actionType.SET_CART_ITEMS,
             cartItems: items,
         });
     };
@@ -23,21 +22,24 @@ const CartItem = ({item}) => {
     const updateQty = (action, id) => {
         if(action == "add"){
             setQty(qty + 1)
-            cartItems.map(item => {
+            cartItems.map((item) => {
                 if(item.id === id){
                     item.qty += 1;
+                    setFlag(flag +1);
                 }
             });
             cartDispatch();
         }else{
             if(qty == 1){
-                setitems(cartItems.filter((item) => item.id !== id))
+                items = cartItems.filter((item) => item.id !==id);
+                setFlag(flag +1);
                 cartDispatch();
             }else{
                 setQty(qty -1);
-                cartItems.map(item => {
+                cartItems.map((item) => {
                     if(item.id === id){
                         item.qty -= 1;
+                        setFlag(flag + 1);
                     }
                 });
                 cartDispatch();
@@ -46,8 +48,8 @@ const CartItem = ({item}) => {
     };
 
     useEffect(() =>{
-        setitems(cartItems);
-    }, [qty])
+        items = cartItems;
+    }, [qty,items]);
 
 
     return (
