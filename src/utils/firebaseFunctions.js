@@ -1,4 +1,4 @@
-import { collection, doc, getDocs, orderBy, query, setDoc } from "firebase/firestore"
+import { collection, doc, getDocs, orderBy, query, setDoc, deleteDoc } from "firebase/firestore";
 import { firestore } from "../firebase.config"
 
 // Saving new Item
@@ -12,5 +12,16 @@ export const getAllFoodItems = async () => {
         query(collection(firestore, "foodItems"), orderBy("id", "desc"))
     );
     return items.docs.map((doc) => doc.data());
-}
+};
+
+export const deleteItem = async (id) => {
+    try {
+        await deleteDoc(doc(firestore, 'foodItems', id));
+        console.log(`Document with id ${id} deleted successfully.`);
+    } catch (error) {
+        console.error("Error deleting document: ", error);
+    }
+};
+
+
 
