@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react'
-import { IoFastFood, IoCloseOutline } from 'react-icons/io5'
+import { IoFastFood } from 'react-icons/io5'
 import {categories} from '../utils/data'
 import { motion } from 'framer-motion'
 import RowContainer from './RowContainer'
 import { useStateValue } from '../context/StateProvider'
+import RowContainerDelete from './RowContainerDelete'
 
 
 const DeleteContainer = () => {
@@ -33,7 +34,7 @@ const DeleteContainer = () => {
         </div>
 
         <div className='w-full'>
-            <RowContainer flag={false} data={foodItems?.filter(n=>n.category === filter)}/>
+            <RowContainerDelete flag={false} data={foodItems?.filter(n=>n.category === filter)}/>
         </div>
     </div>
 </section>
