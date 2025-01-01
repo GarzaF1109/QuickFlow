@@ -17,21 +17,21 @@ function RowContainerDelete({ flag, data, scrollValue }) {
   const [notification, setNotification] = useState(null); // Estado para manejar notificaciones
   const [{ cartItems }, dispatch] = useStateValue();
 
-  const addtocart = () => {
-    dispatch({
-      type: actionType.SET_CART_ITEMS,
-      cartItems: items,
-    });
-    localStorage.setItem("cartItems", JSON.stringify(items));
-  };
+  // const addtocart = () => {
+  //   dispatch({
+  //     type: actionType.SET_CART_ITEMS,
+  //     cartItems: items,
+  //   });
+  //   localStorage.setItem("cartItems", JSON.stringify(items));
+  // };
 
   useEffect(() => {
     rowContainer.current.scrollLeft += scrollValue;
   }, [scrollValue]);
 
-  useEffect(() => {
-    addtocart();
-  }, [items]);
+  // useEffect(() => {
+  //   addtocart();
+  // }, [items]);
 
   const handleDelete = async () => {
     try {

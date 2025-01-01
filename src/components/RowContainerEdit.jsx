@@ -1,12 +1,13 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { MdShoppingBasket } from 'react-icons/md';
 import { motion } from 'framer-motion';
 import NotFound from '../img/NotFound.svg';
 import { FaPencilAlt } from 'react-icons/fa';
 import { IoCloseSharp } from 'react-icons/io5';
+import { FaRegCircleCheck } from "react-icons/fa6";
+import { MdErrorOutline } from "react-icons/md";
 import { useStateValue } from '../context/StateProvider';
 import { actionType } from '../context/reducer';
-import { editItem } from '../utils/firebaseFunctions'; // Importar la función editItem
+import { editItem } from '../utils/firebaseFunctions';
 
 function RowContainerEdit({ flag, data, scrollValue }) {
   const rowContainer = useRef();
@@ -14,23 +15,24 @@ function RowContainerEdit({ flag, data, scrollValue }) {
   const [showModal, setShowModal] = useState(false);
   const [itemToEdit, setItemToEdit] = useState(null);
   const [formValues, setFormValues] = useState({ title: '', price: '', calories: '' });
+  const [notification, setNotification] = useState(null); // Estado para notificaciones
   const [{ cartItems }, dispatch] = useStateValue();
 
-  const addToCart = () => {
-    dispatch({
-      type: actionType.SET_CART_ITEMS,
-      cartItems: items,
-    });
-    localStorage.setItem('cartItems', JSON.stringify(items));
-  };
+//   const addToCart = () => {
+//     dispatch({
+//       type: actionType.SET_CART_ITEMS,
+//       cartItems: items,
+//     });
+//     localStorage.setItem('cartItems', JSON.stringify(items));
+//   };
 
   useEffect(() => {
     rowContainer.current.scrollLeft += scrollValue;
   }, [scrollValue]);
 
-  useEffect(() => {
-    addToCart();
-  }, [items]);
+//   useEffect(() => {
+//     addToCart();
+//   }, [items]);
 
   const handleEditClick = (item) => {
     setItemToEdit(item);
@@ -50,18 +52,20 @@ function RowContainerEdit({ flag, data, scrollValue }) {
   const handleConfirmEdit = async () => {
     const updatedItem = { ...itemToEdit, ...formValues };
     try {
-      // Actualizar en Firestore
       await editItem(itemToEdit.id, updatedItem);
-
-      // Actualizar el estado local
       const updatedItems = cartItems.map((cartItem) =>
         cartItem.id === itemToEdit.id ? updatedItem : cartItem
       );
       setItems(updatedItems);
-      setShowModal(false);
-      console.log('Item editado exitosamente.');
+      setNotification({ success: true, message: "Edición realizada con éxito" });
     } catch (error) {
       console.error('Error al editar el item:', error);
+      setNotification({ success: false, message: "Error al editar el ítem" });
+    } finally {
+      setShowModal(false);
+      setTimeout(() => {
+        setNotification(null); // Desaparece la notificación después de 3 segundos
+      }, 3000);
     }
   };
 
@@ -137,6 +141,7 @@ function RowContainerEdit({ flag, data, scrollValue }) {
               Editar Item: {itemToEdit?.title}
             </p>
             <div className="flex flex-col gap-4">
+              <p className='font-semibold'>Título</p>
               <input
                 type="text"
                 name="title"
@@ -145,6 +150,7 @@ function RowContainerEdit({ flag, data, scrollValue }) {
                 className="border p-2 rounded w-full"
                 placeholder="Título"
               />
+              <p className='font-semibold'>Precio</p>
               <input
                 type="text"
                 name="price"
@@ -153,6 +159,7 @@ function RowContainerEdit({ flag, data, scrollValue }) {
                 className="border p-2 rounded w-full"
                 placeholder="Precio"
               />
+              <p className='font-semibold'>Descripción</p>
               <input
                 type="text"
                 name="calories"
@@ -171,13 +178,27 @@ function RowContainerEdit({ flag, data, scrollValue }) {
                 Cancelar
               </button>
               <button
-                className="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 w-full sm:w-auto"
+                className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 w-full sm:w-auto"
                 onClick={handleConfirmEdit}
               >
                 Confirmar
               </button>
             </div>
           </div>
+        </motion.div>
+      )}
+
+      {notification && (
+        <motion.div
+          initial={{ opacity: 0, scale: 0.6 }}
+          animate={{ opacity: 1, scale: 1 }}
+          exit={{ opacity: 0, scale: 0.6 }}
+          className={`fixed top-10 right-10 z-50 flex items-center gap-4 p-4 rounded shadow-md  ${
+            notification.success ? 'bg-green-500' : 'bg-red-500'
+          } text-white font-semibold`}
+        >
+          {notification.success ? <FaRegCircleCheck className="mr-2" /> : <MdErrorOutline className="mr-2" />}
+          <p>{notification.message}</p>
         </motion.div>
       )}
     </div>
