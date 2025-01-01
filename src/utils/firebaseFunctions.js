@@ -23,5 +23,13 @@ export const deleteItem = async (id) => {
     }
 };
 
+export const editItem = async (id, updatedData) => {
+    try {
+        await setDoc(doc(firestore, 'foodItems', id), updatedData, { merge: true });
+        console.log(`Document with id ${id} updated successfully.`);
+    } catch (error) {
+        console.error("Error updating document: ", error);
+    }
+};
 
 
