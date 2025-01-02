@@ -7,6 +7,7 @@ import { actionType } from '../context/reducer'
 import { div } from 'framer-motion/client'
 import EmptyCart from '../img/emptyCart.svg';
 import CartItem from './CartItem'
+import { saveBill } from '../utils/firebaseFunctions'
 
 function CartContainer() {
   
@@ -94,9 +95,27 @@ function CartContainer() {
                         </div>
         
                         {user ?(
-                            <motion.button whileTap={{scale: 0.8}} type='button' className='w-full p-2 rounded-full bg-gradient-to-tr from-orange-400 to-orange-600 text-gray-50 text-lg my-2 hover:shadow-lg'>
-                                Check Out
-                            </motion.button>
+                            <motion.button 
+    whileTap={{ scale: 0.8 }} 
+    type="button" 
+    className="w-full p-2 rounded-full bg-gradient-to-tr from-orange-400 to-orange-600 text-gray-50 text-lg my-2 hover:shadow-lg"
+    onClick={async () => {
+        if (cartItems.length > 0) {
+            const result = await saveBill(cartItems, user?.uid);
+            if (result) {
+                alert(`Bill ${result.billNumber} for ${result.formattedDate} created successfully.`);
+                clearCart(); // Clear cart after successful checkout
+            } else {
+                alert("Failed to create bill. Please try again.");
+            }
+        } else {
+            alert("Your cart is empty.");
+        }
+    }}
+>
+    Check Out
+</motion.button>
+
                         ): (
                             <motion.button whileTap={{scale: 0.8}} type='button' className='w-full p-2 rounded-full bg-gradient-to-tr from-orange-400 to-orange-600 text-gray-50 text-lg my-2 hover:shadow-lg'>
                                 Login to checkout
