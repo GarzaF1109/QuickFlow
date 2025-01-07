@@ -7,6 +7,7 @@ import { getAllFoodItems } from "./utils/firebaseFunctions";
 import { actionType } from "./context/reducer";
 import DeleteContainer from "./components/DeleteContainer";
 import EditContainer from "./components/EditContainer";
+import TicketsView from "./components/TicketsView";
 
 const App = () => {
     const [{foodItems}, dispatch] = useStateValue ();
@@ -32,6 +33,7 @@ const App = () => {
                         <Route path="/createItem" element={<CreateContainer/>}/>
                         <Route path="/deleteItem" element={<DeleteContainer/>}/>
                         <Route path="/editItem" element={<EditContainer/>}/>
+                        <Route path="/ticketsView" element={<TicketsView/>}/>
 
                     </Routes>
                 </main>    

@@ -1,5 +1,6 @@
-import { collection, doc, getDocs, orderBy, query, setDoc, deleteDoc, getDoc, serverTimestamp } from "firebase/firestore";
+import { getFirestore, collection, doc, getDocs, orderBy, query, setDoc, deleteDoc, getDoc, serverTimestamp } from "firebase/firestore";
 import { firestore } from "../firebase.config"
+import { getApp } from "firebase/app";
 
 // Saving new Item
 export const saveItem = async (data) => {
@@ -73,6 +74,29 @@ export const saveBill = async (cartItems, userId) => {
         console.error("Error saving bill: ", error);
     }
 };
+
+const db = getFirestore();
+
+export const getTodaysBills = async (date) => {
+    try {
+        const currentDate = new Date();
+const formattedDate = `${currentDate.getFullYear()}-${(currentDate.getMonth() + 1)
+    .toString()
+    .padStart(2, "0")}-${currentDate.getDate().toString().padStart(2, "0")}`;
+        const billsRef = collection(db, 'bills', formattedDate, '2'); // Aquí colocas la fecha y otros identificadores
+        const billsSnapshot = await getDocs(billsRef);
+        if (billsSnapshot.empty) {
+            console.log("No bills found for today.");
+        } else {
+            billsSnapshot.forEach(docSnap => {
+                console.log("Bill data:", docSnap.data());
+            });
+        }
+    } catch (error) {
+        console.error("Error fetching today's bills: ", error);
+    }
+};
+
 
 // export const saveBillItems = async (items) => {
 //     try {
