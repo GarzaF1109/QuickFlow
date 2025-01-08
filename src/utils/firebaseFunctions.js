@@ -1,8 +1,7 @@
-import { getFirestore, collection, doc, getDocs, orderBy, query, setDoc, deleteDoc, getDoc, serverTimestamp } from "firebase/firestore";
+import { getFirestore, collection, doc, getDocs, orderBy, listCollections, query, setDoc, deleteDoc, getDoc, serverTimestamp } from "firebase/firestore";
 import { firestore } from "../firebase.config"
 import { getApp } from "firebase/app";
 
-// Saving new Item
 export const saveItem = async (data) => {
     await setDoc(doc(firestore, 'foodItems', `${Date.now()}`), data, {merge: true}
     );
@@ -40,26 +39,20 @@ export const saveBill = async (cartItems, userId) => {
             .toString()
             .padStart(2, "0")}-${currentDate.getDate().toString().padStart(2, "0")}`;
         
-        // Reference to the bills collection for the current date
         const dateRef = doc(firestore, "bills", formattedDate);
 
-        // Get or initialize the bill number
         const dateSnapshot = await getDoc(dateRef);
         let billNumber = 1;
 
         if (dateSnapshot.exists()) {
-            // Increment bill count if already exists
             const data = dateSnapshot.data();
             billNumber = (data.lastBillNumber || 0) + 1;
         }
 
-        // Update the last bill number
         await setDoc(dateRef, { lastBillNumber: billNumber }, { merge: true });
 
-        // Reference for the specific bill
         const billRef = doc(collection(dateRef, `${billNumber}`));
         
-        // Save the bill data
         const billData = {
             items: cartItems,
             userId: userId || "guest",
@@ -77,23 +70,35 @@ export const saveBill = async (cartItems, userId) => {
 
 const db = getFirestore();
 
-export const getTodaysBills = async (date) => {
+export const getTodaysBills = async () => {
     try {
         const currentDate = new Date();
-const formattedDate = `${currentDate.getFullYear()}-${(currentDate.getMonth() + 1)
-    .toString()
-    .padStart(2, "0")}-${currentDate.getDate().toString().padStart(2, "0")}`;
-        const billsRef = collection(db, 'bills', formattedDate, '2'); // Aquí colocas la fecha y otros identificadores
-        const billsSnapshot = await getDocs(billsRef);
-        if (billsSnapshot.empty) {
-            console.log("No bills found for today.");
-        } else {
-            billsSnapshot.forEach(docSnap => {
-                console.log("Bill data:", docSnap.data());
-            });
+        const formattedDate = `${currentDate.getFullYear()}-${(currentDate.getMonth() + 1)
+            .toString()
+            .padStart(2, "0")}-${currentDate.getDate().toString().padStart(2, "0")}`;
+        
+        let subcollectionId = 1;
+        let allBills = [];
+
+        while (subcollectionId <= 10000) {
+            const billsRef = collection(db, 'bills', formattedDate, subcollectionId.toString());
+            const billsSnapshot = await getDocs(billsRef);
+            
+            if (billsSnapshot.empty) {
+                break; 
+            } else {
+                billsSnapshot.forEach(docSnap => {
+                    allBills.push(docSnap.data());
+                });
+            }
+            
+            subcollectionId++;
         }
+        console.log(allBills)
+        return allBills;
     } catch (error) {
         console.error("Error fetching today's bills: ", error);
+        throw error; 
     }
 };
 
