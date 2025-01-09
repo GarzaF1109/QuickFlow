@@ -24,14 +24,14 @@ const TicketsView = () => {
   }, []);
 
   return (
-    <div className="w-full flex flex-col items-center justify-start my-12">
+    <div className="w-full h-auto flex flex-col items-center justify-start my-12">
       {loading ? (
         <p className="text-lg text-headingColor font-semibold">Loading...</p>
       ) : bills.length > 0 ? (
         bills.map((bill, index) => (
           <div
             key={index}
-            className="w-full max-w-[600px] h-auto bg-cardOverlay rounded-lg py-4 px-6 mb-4 backdrop-blur-lg hover:drop-shadow-lg flex flex-col items-start justify-between relative"
+            className="w-full h-auto bg-cardOverlay rounded-lg py-4 px-6 mb-4 backdrop-blur-lg hover:drop-shadow-lg flex flex-col items-start justify-between relative"
           >
             <h2 className="text-lg font-bold text-headingColor">
               CUENTA ID: {bill.userId}
@@ -39,7 +39,7 @@ const TicketsView = () => {
             <p className="text-sm text-gray-600">
               Timestamp: {new Date(bill.timestamp.seconds * 1000).toLocaleString()}
             </p>
-            <div className="w-full mt-4">
+            <div className="w-full mt-4 columns-2">
               {bill.items.map((item, i) => (
                 <div
                   key={i}
@@ -53,7 +53,7 @@ const TicketsView = () => {
                     />
                     <div className="ml-4">
                       <p className="text-sm font-semibold">{item.title}</p>
-                      <p className="text-xs text-gray-500">
+                      <p className="text-sm text-gray-500">
                         Qty: {item.qty} | ${item.price}
                       </p>
                     </div>
@@ -68,7 +68,7 @@ const TicketsView = () => {
         <div className="w-full flex flex-col items-center justify-center">
           <img src={NotFound} alt="Not Found" className="h-340" />
           <p className="text-xl text-headingColor font-semibold my-2">
-            No bills found for today!
+            Sin Pedidos El Día De Hoy!
           </p>
         </div>
       )}
