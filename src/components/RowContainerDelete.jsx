@@ -38,11 +38,11 @@ function RowContainerDelete({ flag, data, scrollValue }) {
       if (itemToDelete?.id) {
         await deleteItem(itemToDelete.id); // Eliminar de Firebase
         setitems(cartItems.filter((item) => item.id !== itemToDelete.id)); // Actualizar estado local
-        setNotification({ success: true, message: "Proceso realizado con éxito" });
+        setNotification({ success: true, message: "Successfully Deleted" });
       }
     } catch (error) {
       console.error("Error al eliminar el item: ", error);
-      setNotification({ success: false, message: "Proceso fallido" });
+      setNotification({ success: false, message: "Process failed" });
     } finally {
       setShowModal(false);
       setItemToDelete(null);
@@ -121,7 +121,7 @@ function RowContainerDelete({ flag, data, scrollValue }) {
         className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
           <div className="bg-white rounded-lg p-6 w-11/12 sm:w-96 max-w-lg">
             <p className="text-lg font-semibold mb-4 text-center sm:text-left">
-              ¿Estás seguro de eliminar este item?
+              Are you sure that you want to eliminate de following item?
             </p>
             <div className="flex justify-center items-center my-1.5">
               <img className="w-4/5 sm:w-3/5 translate-x-[-5px] sm:translate-x-[-10px]" src={Person} alt="Person" />
@@ -131,13 +131,13 @@ function RowContainerDelete({ flag, data, scrollValue }) {
                 className="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400 w-full sm:w-auto"
                 onClick={() => setShowModal(false)}
               >
-                Cancelar
+                Cancel
               </button>
               <button
                 className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 w-full sm:w-auto"
                 onClick={handleDelete}
               >
-                Sí, eliminar
+                Yes, delete it
               </button>
             </div>
           </div>

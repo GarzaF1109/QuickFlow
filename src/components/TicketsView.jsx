@@ -68,7 +68,7 @@ const TicketsView = () => {
         <div className="w-full flex flex-col items-center justify-center">
           <img src={NotFound} alt="Not Found" className="h-340" />
           <p className="text-xl text-headingColor font-semibold my-2">
-            Sin Pedidos El Día De Hoy!
+            No orders per today
           </p>
         </div>
       )}

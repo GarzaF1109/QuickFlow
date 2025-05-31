@@ -138,10 +138,10 @@ function RowContainerEdit({ flag, data, scrollValue }) {
         >
           <div className="bg-white rounded-lg p-6 w-11/12 sm:w-96 max-w-lg">
             <p className="text-lg font-semibold mb-4 text-center sm:text-left">
-              Editar Item: {itemToEdit?.title}
+              Edit Item: {itemToEdit?.title}
             </p>
             <div className="flex flex-col gap-4">
-              <p className='font-semibold'>Título</p>
+              <p className='font-semibold'>Title</p>
               <input
                 type="text"
                 name="title"
@@ -150,7 +150,7 @@ function RowContainerEdit({ flag, data, scrollValue }) {
                 className="border p-2 rounded w-full"
                 placeholder="Título"
               />
-              <p className='font-semibold'>Precio</p>
+              <p className='font-semibold'>Price</p>
               <input
                 type="text"
                 name="price"
@@ -159,7 +159,7 @@ function RowContainerEdit({ flag, data, scrollValue }) {
                 className="border p-2 rounded w-full"
                 placeholder="Precio"
               />
-              <p className='font-semibold'>Descripción</p>
+              <p className='font-semibold'>Calories</p>
               <input
                 type="text"
                 name="calories"
@@ -175,13 +175,13 @@ function RowContainerEdit({ flag, data, scrollValue }) {
                 className="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400 w-full sm:w-auto"
                 onClick={() => setShowModal(false)}
               >
-                Cancelar
+                Cancel
               </button>
               <button
                 className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 w-full sm:w-auto"
                 onClick={handleConfirmEdit}
               >
-                Confirmar
+                Update
               </button>
             </div>
           </div>
